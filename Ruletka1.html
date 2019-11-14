@@ -1,0 +1,27 @@
+<meta charset="utf-8">
+<script>
+
+var dealer = [getCard()];
+var player = [getCard(), getCard()];
+
+if (getSum(player) == 21) {
+    alert(getStatus() + '\nВот это да! Сразу 21!')
+} else {
+    var answer = '';
+    do {
+        answer = prompt(getStatus() + '\nТекущая сумма карт у игрока: ' + getSum(player) + '\nХотите еще карту? (Если да - нажмите 1, если нет - нажмите любую клавишу');
+        if (answer == '1') {
+        player.push(getCard()); 
+
+            if (getSum(player) == 21) {
+                alert(getStatus() + '\nТекущая сумма карт у игрока: ' + getSum(player) + '\nОчко! Поздравлямс!');
+                break;
+            } else if (getSum(player) > 21) {
+                alert(getStatus() + '\nТекущая сумма карт у игрока: ' + getSum(player) + '\nЭть! Перебор =(');
+                break;
+            }
+        }
+    alert(getStatus() + '\nТекущая сумма карт у игрока: ' + getSum(player));
+    } while(answer == '1');
+
+}
