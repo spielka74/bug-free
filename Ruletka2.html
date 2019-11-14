@@ -1,0 +1,116 @@
+﻿<meta charset="utf-8">
+<script>
+
+function getRandomInt(min, max) {
+	return Math.floor(Math.random()*(max - min + 1)) + min;
+}
+
+function getCard() {
+	var cards = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+	return cards[getRandomInt(0, cards.length - 1)];
+}
+
+function getSum(arr) {
+	var sum = 0;
+
+	for (var i = 0; i < arr.length; i++) {
+		if (arr[i] != 'A') {
+			parseInt(arr[i]);
+			if (isNaN(arr[i])) {
+				sum = sum + 10;
+			} else {
+				sum = sum + parseInt(arr[i]);
+			}
+		}
+	}
+
+	for (var i = 0; i < arr.length; i++) {
+		if (arr[i] == 'A') {
+			if (sum > 10) {
+				sum = sum + 1;
+			} else {
+				sum = sum + 11;
+			}
+		}
+	}
+
+	return sum;
+}
+
+function getStatus() {
+	return 'Дилер: ' + dealer.join(', ') + '\nИгрок: ' + player.join(', ') + '.'
+}
+
+var dealerbank = 1000000;
+var playerbank = 10000;
+var rounds = 0;
+
+do {
+	var bet = parseInt(prompt('У вас: ' + playerbank + '. У дилера: ' + dealerbank + '. Сделайте ставку: '));
+  	while ((bet > playerbank) || (bet > dealerbank) || (isNaN(bet) == true) || (bet <= 0)) {
+		bet = parseInt(prompt('Будьте внимательнее. У вас: ' + playerbank + '. У дилера: ' + dealerbank + '. Сделайте ставку: '));
+	}
+
+	var dealer = [getCard()];
+	var player = [getCard(), getCard()];
+	rounds++;
+
+	if (getSum(player) == 21) {
+		alert(getStatus() + '\nВот это да! Сразу 21!');
+		playerbank = playerbank + bet*2; 
+		dealerbank = dealerbank - bet;
+	} else {
+		var answer = '';
+		do {
+			answer = prompt(getStatus() + '\nТекущая сумма карт у игрока: ' + getSum(player) + '\nХотите еще карту? (Если да - нажмите 1, если нет - нажмите любую клавишу');
+			if (answer == '1') {
+			player.push(getCard());	
+
+				if (getSum(player) == 21) {
+					alert(getStatus() + '\nТекущая сумма карт у игрока: ' + getSum(player) + '\nОчко! Поздравлямс!');
+					playerbank = playerbank + bet*2; 
+					dealerbank = dealerbank - bet;
+					break;
+				} else if (getSum(player) > 21) {
+					alert(getStatus() + '\nТекущая сумма карт у игрока: ' + getSum(player) + '\nЭть! Перебор =(');
+					playerbank = playerbank - bet; 
+					dealerbank = dealerbank + bet;
+					break;
+				}
+			} else {
+				while (getSum(dealer) < 17) {
+					dealer.push(getCard());
+				};
+				if (getSum(dealer) == 21) {
+					alert(getStatus() + '\nУ дилера BlackJack... =(');
+					playerbank = playerbank - bet;
+					dealerbank = dealerbank + bet*2;
+				} else if (getSum(dealer) > 21) {
+					alert(getStatus() + '\nУ дилера перебор! Ыыы =)');
+					playerbank = playerbank + bet;
+					dealerbank = dealerbank - bet;
+				} else if (getSum(dealer) == getSum(player)) {
+					alert(getStatus() + '\nНичья! о_О');
+				} else if (getSum(player) > getSum(dealer)) {
+					alert(getStatus() + '\nИиххаа! Победа! ;-Р');
+					playerbank = playerbank + bet;
+					dealerbank = dealerbank - bet;
+				} else {
+					alert(getStatus() + '\nПоражение =(');
+					playerbank = playerbank - bet;
+					dealerbank = dealerbank + bet;
+				}
+			}
+		} while(answer == '1');
+	}
+	if (playerbank == 0) {
+		alert('Количество сыгранных раундов: ' + rounds + '.\nУ вас в банке: ' + playerbank + '.\nУ дилера: ' + dealerbank + '\nУ вас недостаточно средств для продолжения игры =(');
+		break;
+	}
+	if (dealerbank == 0) {
+		alert('Количество сыгранных раундов: ' + rounds + '.\nУ вас в банке: ' + playerbank + '.\nУ дилера: ' + dealerbank + '\nУ дилера недостаточно средств для продолжения игры =(');
+		break;
+	}
+} while (playerbank>0 && dealerbank>0);
+
+</script>
